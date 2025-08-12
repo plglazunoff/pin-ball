@@ -8,6 +8,7 @@ public class CollisionHandler : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //SoundManager.Instance.PlaySound(SoundType.BallType);
         if (collision.collider.TryGetComponent<HitPoints>(out var hitPoints))
         {
             int points = hitPoints.PointsPerHit;

@@ -22,6 +22,7 @@ public class HitPoints : MonoBehaviour
 
         if (collision.gameObject.CompareTag("sling"))
         {
+            //SoundManager.Instance.PlaySound(SoundType.SlingshotType);
             Debug.Log("Slingshot collision");
             _gameManager.GameScore += 5000;
         }

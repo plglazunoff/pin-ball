@@ -19,6 +19,7 @@ public class Bumper : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
+        //SoundManager.Instance.PlaySound(SoundType.BumperType);
         _pointLight.color = new Color(Random.value, Random.value, Random.value);
 
         transform.localScale = _targetScale;

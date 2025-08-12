@@ -1,29 +1,79 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class EndGameManager : MonoBehaviour
 {
-    //public GameObject EndGamePanel;
-    //public Button RestartButton;
-    //public Button ExitButton;
+    public static EndGameManager Instance;
     public TMP_Text CurrentScoreText;
     public TMP_Text BestScoreText;
 
     private int _bestScorePoints = 0;
     private GameManager _gameManager;
 
+    private List<int> _highScores;
+    private const int _maxScores = 10;
+    private const string _highScoreKey = "HighScores";
+
     private void Awake()
     {
         _gameManager = FindObjectOfType<GameManager>();
+        
+        if(Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        LoadHighScores();
+    }
+
+    private void LoadHighScores()
+    {
+        _highScores = new List<int>();
+        string scores = PlayerPrefs.GetString(_highScoreKey, "");
+        if (!string.IsNullOrEmpty(scores))
+        {
+            string[] scoreArray = scores.Split(',');
+            foreach (string score in scoreArray)
+            {
+                if(int.TryParse(score, out int value))
+                {
+                    _highScores.Add(value);
+                }
+            }
+        }
+    }
+
+    private void SaveHighScores()
+    {
+        string scores = string.Join(",", _highScores);
+        PlayerPrefs.SetString(_highScoreKey, scores);
+        PlayerPrefs.Save();
+    }
+
+    public void AddScore(int newScore)
+    {
+        _highScores.Add(newScore);
+        _highScores.Sort((a, b) => b.CompareTo(a));
+        if (_highScores.Count < _maxScores)
+        {
+            _highScores.RemoveAt(_highScores.Count - 1);
+        }
+        SaveHighScores();
+    }
+
+    public List<int> GetHighScores()
+    {
+        return new List<int>(_highScores);
     }
 
     private void Start()
     {
-        _gameManager.OnGameEnded += LoadScore;
+        GameManager.OnGameEnded += LoadScore;
         LoadScore();
     }
 
@@ -40,15 +90,17 @@ public class EndGameManager : MonoBehaviour
         BestScoreText.text = $"Best Score: {_bestScorePoints}";
     }
 
+
     private void SaveScore()
     {
+        AddScore(_bestScorePoints);
         PlayerPrefs.SetInt("Score", _bestScorePoints);
         PlayerPrefs.Save();
     }
 
     public void LoadScore()
     {
-        _gameManager.OnGameEnded -= LoadScore;
+        GameManager.OnGameEnded -= LoadScore;
         _bestScorePoints = PlayerPrefs.GetInt("Score", 0);
     }
 
