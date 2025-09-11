@@ -35,7 +35,7 @@ public class PauseManager : MonoBehaviour
 
     public void ShowLeaderboardPanel()
     {
-        //SoundManager.Instance.PlaySound(SoundType.ButtonType);
+        SoundManager.Instance.PlaySound(SoundType.ButtonType);
         _leaderboardPanel.gameObject.SetActive(true);
         _leaderboardPanel.alpha = 0;
         _leaderboardPanel.DOFade(1, 1);
@@ -44,29 +44,31 @@ public class PauseManager : MonoBehaviour
 
     public void HideLeaderboardPanel()
     {
-        //SoundManager.Instance.PlaySound(SoundType.ButtonType);
+        SoundManager.Instance.PlaySound(SoundType.ButtonType);
         _leaderboardPanel.DOFade(0, 1f).OnComplete(() => _leaderboardPanel.gameObject.SetActive(false));
         HideLeaderboardButton.transform.DOPunchScale(Vector3.one * 0.2f, 0.3f, 10, 1);
     }
 
     private void PauseGame()
     {
-        //SoundManager.Instance.PlaySound(SoundType.ButtonType);
+        SoundManager.Instance.PlaySound(SoundType.ButtonType);
         OnGamePaused?.Invoke();
         Vector3 movePosition = new Vector3(-Screen.width, _pausePanelTransform.anchoredPosition.y, 0);
         _pausePanelTransform.anchoredPosition = movePosition;
-        _pausePanelTransform.DOAnchorPos(Vector3.zero, 1);
+        _pausePanelTransform.DOAnchorPos(Vector3.zero, 1).OnComplete(() => _pauseButton.interactable = false);
         _pausePanel.SetActive(true);
-        _pauseButton.interactable = false;
     }
 
     private void ResumeGame()
     {
-        //SoundManager.Instance.PlaySound(SoundType.ButtonType);
+        SoundManager.Instance.PlaySound(SoundType.ButtonType);
         OnGameResumed?.Invoke();
         Vector3 movePosition = new Vector3(-Screen.width, _pausePanelTransform.anchoredPosition.y, 0);
-        _pausePanelTransform.DOAnchorPos(movePosition, 1).OnComplete(() => _pausePanel.SetActive(false));
-        _pauseButton.interactable = true;
+        _pausePanelTransform.DOAnchorPos(movePosition, 1).OnComplete(() =>
+        {
+            _pausePanel.SetActive(false);
+            _pauseButton.interactable = true;
+        });
         
         //_pausePanelTransform.anchoredPosition = startPosition;
     }

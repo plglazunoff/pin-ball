@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 
 public class Bumper : MonoBehaviour
 {
@@ -17,18 +13,17 @@ public class Bumper : MonoBehaviour
         _startScale = transform.localScale;
         _targetScale = _startScale * _scaleMultiplier;
     }
+
     private void OnCollisionEnter(Collision collision)
     {
-        //SoundManager.Instance.PlaySound(SoundType.BumperType);
+        SoundManager.Instance.PlaySound(SoundType.BumperType);
         _pointLight.color = new Color(Random.value, Random.value, Random.value);
 
         transform.localScale = _targetScale;
     }
+
     private void OnCollisionExit(Collision collision)
     {
         transform.localScale = _startScale;
     }
-    
-
-
 }

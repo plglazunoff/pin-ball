@@ -29,13 +29,13 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            //SoundManager.Instance.PlaySound(SoundType.FlipperType);
+            SoundManager.Instance.PlaySound(SoundType.FlipperType);
             _leftFlipper.SetTrigger("Hit");
         }
             
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            //SoundManager.Instance.PlaySound(SoundType.FlipperType);
+            SoundManager.Instance.PlaySound(SoundType.FlipperType);
         _rightFlipper.SetTrigger("Hit");
         }
     }
@@ -70,13 +70,13 @@ public class PlayerController : MonoBehaviour
 
     private void PauseGame()
     {
-        //SoundManager.Instance.PlaySound(SoundType.ButtonType);
+        SoundManager.Instance.PlaySound(SoundType.ButtonType);
         _canMove = false;
     }
 
     private void ResumeGame()
     {
-        //SoundManager.Instance.PlaySound(SoundType.ButtonType);
+        SoundManager.Instance.PlaySound(SoundType.ButtonType);
         _canMove = true;
     }
 

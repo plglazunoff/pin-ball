@@ -11,7 +11,7 @@ public class EndGameManager : MonoBehaviour
     private int _bestScorePoints = 0;
     private GameManager _gameManager;
 
-    private List<int> _highScores;
+    private List<int> _highScores = new List<int>();
     private const int _maxScores = 10;
     private const string _highScoreKey = "HighScores";
 
@@ -33,7 +33,7 @@ public class EndGameManager : MonoBehaviour
 
     private void LoadHighScores()
     {
-        _highScores = new List<int>();
+        _highScores.Clear();
         string scores = PlayerPrefs.GetString(_highScoreKey, "");
         if (!string.IsNullOrEmpty(scores))
         {
@@ -57,12 +57,27 @@ public class EndGameManager : MonoBehaviour
 
     public void AddScore(int newScore)
     {
-        _highScores.Add(newScore);
-        _highScores.Sort((a, b) => b.CompareTo(a));
-        if (_highScores.Count < _maxScores)
+        if (_highScores.Contains(newScore))
         {
-            _highScores.RemoveAt(_highScores.Count - 1);
+            return;
         }
+
+        if(_highScores.Count == 0)
+        {
+            _highScores.Add(newScore);
+            SaveHighScores();
+        }
+        else if(newScore > _highScores[0])
+        {
+            _highScores.Add(newScore);
+            _highScores.Sort((a, b) => b.CompareTo(a));
+
+            if (_highScores.Count > _maxScores)
+            {
+                _highScores.RemoveAt(_highScores.Count - 1);
+            }
+        }
+        
         SaveHighScores();
     }
 
@@ -73,17 +88,12 @@ public class EndGameManager : MonoBehaviour
 
     private void Start()
     {
-        GameManager.OnGameEnded += LoadScore;
+        GameManager.OnGameEnded += OnGameEnd;
         LoadScore();
     }
 
     private void Update()
     {
-        if (_gameManager.GameScore > _bestScorePoints)
-        {
-            _bestScorePoints = _gameManager.GameScore;
-            SaveScore();
-        }
 
         CurrentScoreText.text = $"Current Score: {_gameManager.GameScore}";
 
@@ -91,17 +101,25 @@ public class EndGameManager : MonoBehaviour
     }
 
 
-    private void SaveScore()
+    private void OnGameEnd()
     {
-        AddScore(_bestScorePoints);
-        PlayerPrefs.SetInt("Score", _bestScorePoints);
-        PlayerPrefs.Save();
+        if (_gameManager.GameScore > _bestScorePoints)
+        {
+            _bestScorePoints = _gameManager.GameScore;
+            PlayerPrefs.SetInt("Score", _bestScorePoints);
+            PlayerPrefs.Save();
+        }
+        AddScore(_gameManager.GameScore);
     }
 
     public void LoadScore()
     {
-        GameManager.OnGameEnded -= LoadScore;
         _bestScorePoints = PlayerPrefs.GetInt("Score", 0);
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.OnGameEnded -= OnGameEnd;
     }
 
 }

@@ -37,14 +37,14 @@ public class MenuAnimation : MonoBehaviour
 
     private void StartGame()
     {
-        //SoundManager.Instance.PlaySound(SoundType.ButtonType);
+        SoundManager.Instance.PlaySound(SoundType.ButtonType);
         StartButton.transform.DOPunchScale(Vector3.one * 0.2f, 0.3f, 10, 1);
         _menuPanel.DOFade(0, 3).OnComplete(() => SceneManager.LoadScene("GameScene"));
     }
 
     public void ShowLeaderboardPanel()
     {
-        //SoundManager.Instance.PlaySound(SoundType.ButtonType);
+        SoundManager.Instance.PlaySound(SoundType.ButtonType);
         _leaderboardPanel.gameObject.SetActive(true);
         _leaderboardPanel.alpha = 0;
         _leaderboardPanel.DOFade(1, 1);
@@ -53,7 +53,7 @@ public class MenuAnimation : MonoBehaviour
 
     public void HideLeaderboardPanel()
     {
-        //SoundManager.Instance.PlaySound(SoundType.ButtonType);
+        SoundManager.Instance.PlaySound(SoundType.ButtonType);
         _leaderboardPanel.DOFade(0, 1f).OnComplete(() => _leaderboardPanel.gameObject.SetActive(false));
         HideLeaderboardButton.transform.DOPunchScale(Vector3.one * 0.2f, 0.3f, 10, 1);
     }
@@ -84,7 +84,7 @@ public class MenuAnimation : MonoBehaviour
 
     private void ExitGame()
     {
-        //SoundManager.Instance.PlaySound(SoundType.ButtonType);
+        SoundManager.Instance.PlaySound(SoundType.ButtonType);
         ExitButton.transform.DOKill();
         ExitButton.transform.localScale = Vector3.one;
         ExitButton.transform.DOPunchScale(Vector3.one * 0.2f, 0.3f, 10, 1);
