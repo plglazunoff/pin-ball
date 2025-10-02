@@ -1,6 +1,4 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum SoundType
 {
@@ -21,31 +19,12 @@ public class SoundManager : MonoBehaviour
     public AudioClip SlingshotHitSound;
     public AudioClip ButtonClickSound;
 
-    [Space(30)]
-    [Header("Sliders")]
-    public Slider BumperSlider;
-    public Slider PlungerSlider;
-    public Slider FlipperSlider;
-    public Slider SlingshotSlider;
-
-    [Space(30)]
-    [Header("PercentTexts")]
-    public TMP_Text BumperPercentText;
-    public TMP_Text PlungerPercentText;
-    public TMP_Text FlipperPercentText;
-    public TMP_Text SlingshotPercentText;
-
-
     private static float _bumperPercentVolume = 1;
-    private float _plungerPercentVolume;
-    private float _flipperPercentVolume;
-    private float _slingshotPercentVolume;
-
-    private float _minValue = 0.1f;
-    private float _maxValue = 1f;
+    private static float _plungerPercentVolume = 1;
+    private static float _flipperPercentVolume = 1;
+    private static float _slingshotPercentVolume = 1;
 
     private AudioSource _audioSource;
-    private float _soundVolume;
 
     private void Awake()
     {
@@ -60,9 +39,6 @@ public class SoundManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        BumperSlider.onValueChanged.AddListener(SetUpSlider);
-        DontDestroyOnLoad(BumperSlider);
-        DontDestroyOnLoad(BumperPercentText);
     }
 
     public void PlaySound(SoundType soundType)
@@ -70,40 +46,47 @@ public class SoundManager : MonoBehaviour
         switch (soundType)
         {
             case SoundType.BumperType:
-                _audioSource.PlayOneShot(BumperHitSound);
+                _audioSource.PlayOneShot(BumperHitSound, _bumperPercentVolume);
                 break;
 
             case SoundType.FlipperType:
-                _audioSource.PlayOneShot(FlipperHitSound);
+                _audioSource.PlayOneShot(FlipperHitSound, _flipperPercentVolume);
                 break;
 
             case SoundType.PlungerType:
-                _audioSource.PlayOneShot(PlungerHitSound);
+                _audioSource.PlayOneShot(PlungerHitSound, _plungerPercentVolume);
                 break;
 
             case SoundType.SlingshotType:
-                _audioSource.PlayOneShot(SlingshotHitSound);
+                _audioSource.PlayOneShot(SlingshotHitSound, _slingshotPercentVolume);
                 break;
 
             case SoundType.ButtonType:
-                _audioSource.PlayOneShot(ButtonClickSound);
+                _audioSource.PlayOneShot(ButtonClickSound, 1);
                 break;
         }
     }
 
-    private void SetUpSoundVolume(Slider slider, float value, TMP_Text percentText)
+    public float GetVolume(SoundType soundType)
     {
-        _audioSource.volume = value;
-
-        slider.value = value;
-        slider.minValue = _minValue;
-        slider.maxValue = _maxValue;
-        percentText.text = $"{Mathf.RoundToInt(value * 100)}%";
+        switch (soundType)
+        {
+            case SoundType.BumperType: return _bumperPercentVolume;
+            case SoundType.FlipperType: return _flipperPercentVolume;
+            case SoundType.PlungerType: return _plungerPercentVolume;
+            case SoundType.SlingshotType: return _slingshotPercentVolume;
+            default: return 1;
+        }
     }
 
-    private void SetUpSlider(float value)
+    public void SetVolume(SoundType _soundType, float _value)
     {
-        _bumperPercentVolume = value;
-        SetUpSoundVolume(BumperSlider, _bumperPercentVolume , BumperPercentText);
+        switch (_soundType)
+        {
+            case SoundType.BumperType: _bumperPercentVolume = _value; break;
+            case SoundType.FlipperType: _flipperPercentVolume = _value; break;
+            case SoundType.PlungerType: _plungerPercentVolume = _value; break;
+            case SoundType.SlingshotType: _slingshotPercentVolume = _value; break;
+        }
     }
 }
